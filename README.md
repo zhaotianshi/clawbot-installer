@@ -26,9 +26,13 @@
 
 ### 一键安装
 
-在 Ubuntu 环境中运行以下命令：
+**重要：必须在 Ubuntu 环境中运行，不是 Termux 主环境！**
 
 ```bash
+# 先登录 Ubuntu
+proot-distro login ubuntu
+
+# 然后运行安装脚本
 curl -fsSL https://raw.githubusercontent.com/zhaotianshi/clawbot-installer/main/install.sh | bash
 ```
 

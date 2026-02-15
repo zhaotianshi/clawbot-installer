@@ -26,9 +26,13 @@ Automated installation script for deploying OpenClaw AI agent on Android phones.
 
 ### One-Click Installation
 
-Run in Ubuntu environment:
+**Important: Must run in Ubuntu environment, NOT in Termux main shell!**
 
 ```bash
+# First, login to Ubuntu
+proot-distro login ubuntu
+
+# Then run the installation script
 curl -fsSL https://raw.githubusercontent.com/zhaotianshi/clawbot-installer/main/install.sh | bash
 ```
 

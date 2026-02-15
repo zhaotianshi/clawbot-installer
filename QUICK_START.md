@@ -28,8 +28,14 @@ proot-distro login ubuntu
 
 ## 二、一键安装（3分钟）
 
-在 Ubuntu 环境中，复制粘贴：
+**⚠️ 重要：必须先进入 Ubuntu 环境！**
 
+### 第 1 步：登录 Ubuntu
+```bash
+proot-distro login ubuntu
+```
+
+### 第 2 步：运行安装脚本
 ```bash
 curl -fsSL https://raw.githubusercontent.com/zhaotianshi/clawbot-installer/main/install.sh | bash
 ```
