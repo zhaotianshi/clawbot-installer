@@ -134,6 +134,22 @@ Also in Android Settings:
 - Create or get API key
 - Enter correctly during onboard
 
+### Q7: npm installation fails
+**Solution**:
+```bash
+# Clean cache
+npm cache clean --force
+
+# Use --unsafe-perm
+npm install -g openclaw@latest --unsafe-perm
+
+# Use mirror (for China users)
+npm config set registry https://registry.npmmirror.com
+npm install -g openclaw@latest
+```
+
+**Detailed troubleshooting guide**: See [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+
 ## 💡 Tips
 
 ### Keep Running 24/7

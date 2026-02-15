@@ -37,6 +37,18 @@ echo "  OpenClaw 自动安装脚本"
 echo "=========================================="
 echo ""
 
+# 检查磁盘空间
+AVAILABLE_SPACE=$(df / | tail -1 | awk '{print $4}')
+if [ "$AVAILABLE_SPACE" -lt 524288 ]; then  # 小于 512MB
+    print_warning "磁盘空间可能不足（可用: $(df -h / | tail -1 | awk '{print $4}')）"
+    print_warning "建议至少有 500MB 可用空间"
+    read -p "是否继续? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
+fi
+
 # 检查是否在正确的环境中
 if [ ! -f "/etc/os-release" ]; then
     print_error "无法检测操作系统信息"
@@ -108,13 +120,87 @@ if command -v openclaw &> /dev/null; then
 fi
 
 if ! command -v openclaw &> /dev/null; then
-    npm install -g openclaw@latest
-    print_success "OpenClaw 安装完成"
+    print_info "正在安装 OpenClaw（可能需要几分钟）..."
+    
+    # 配置 npm 以提高成功率
+    npm config set fetch-timeout 60000
+    npm config set fetch-retries 5
+    
+    # 尝试多种安装方法
+    INSTALL_SUCCESS=false
+    
+    # 方法 1: 标准安装
+    print_info "尝试方法 1: 标准安装..."
+    if npm install -g openclaw@latest 2>/dev/null; then
+        INSTALL_SUCCESS=true
+        print_success "OpenClaw 安装完成"
+    else
+        print_warning "方法 1 失败，尝试其他方法..."
+        
+        # 方法 2: 使用 --unsafe-perm
+        print_info "尝试方法 2: 使用 --unsafe-perm..."
+        if npm install -g openclaw@latest --unsafe-perm 2>/dev/null; then
+            INSTALL_SUCCESS=true
+            print_success "OpenClaw 安装完成"
+        else
+            print_warning "方法 2 失败，尝试其他方法..."
+            
+            # 方法 3: 清理缓存后重试
+            print_info "尝试方法 3: 清理缓存后重试..."
+            npm cache clean --force 2>/dev/null
+            if npm install -g openclaw@latest --unsafe-perm 2>/dev/null; then
+                INSTALL_SUCCESS=true
+                print_success "OpenClaw 安装完成"
+            else
+                print_warning "方法 3 失败，尝试使用镜像..."
+                
+                # 方法 4: 使用国内镜像（适合中国用户）
+                print_info "尝试方法 4: 使用 npm 镜像..."
+                npm config set registry https://registry.npmmirror.com
+                if npm install -g openclaw@latest --unsafe-perm 2>/dev/null; then
+                    INSTALL_SUCCESS=true
+                    print_success "OpenClaw 安装完成"
+                    # 恢复官方源
+                    npm config set registry https://registry.npmjs.org
+                else
+                    npm config set registry https://registry.npmjs.org
+                    print_error "所有安装方法都失败了"
+                fi
+            fi
+        fi
+    fi
+    
+    if [ "$INSTALL_SUCCESS" = false ]; then
+        print_error "OpenClaw 安装失败"
+        echo ""
+        echo "可能的原因："
+        echo "1. 网络连接不稳定"
+        echo "2. 磁盘空间不足"
+        echo "3. npm 配置问题"
+        echo ""
+        echo "请尝试："
+        echo "1. 检查网络连接"
+        echo "2. 运行: df -h 检查磁盘空间"
+        echo "3. 查看故障排除指南:"
+        echo "   https://github.com/zhaotianshi/clawbot-installer/blob/main/TROUBLESHOOTING.md"
+        echo ""
+        echo "手动安装命令："
+        echo "  npm cache clean --force"
+        echo "  npm install -g openclaw@latest --unsafe-perm"
+        echo ""
+        exit 1
+    fi
 fi
 
 # 验证 OpenClaw 安装
-OPENCLAW_VERSION=$(openclaw --version 2>/dev/null || echo "安装失败")
-print_success "OpenClaw 版本: $OPENCLAW_VERSION"
+if command -v openclaw &> /dev/null; then
+    OPENCLAW_VERSION=$(openclaw --version 2>/dev/null || echo "unknown")
+    print_success "OpenClaw 版本: $OPENCLAW_VERSION"
+else
+    print_error "OpenClaw 安装验证失败"
+    echo "请查看故障排除指南: https://github.com/zhaotianshi/clawbot-installer/blob/main/TROUBLESHOOTING.md"
+    exit 1
+fi
 
 # 步骤 5: 修复 Android 网络接口错误
 print_info "步骤 5/8: 修复 Android 网络接口问题..."

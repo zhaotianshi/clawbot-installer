@@ -151,6 +151,22 @@ npm uninstall -g openclaw
 rm -rf ~/.openclaw
 ```
 
+### Q9: npm 安装失败
+**解决方案**：
+```bash
+# 清理缓存
+npm cache clean --force
+
+# 使用 --unsafe-perm
+npm install -g openclaw@latest --unsafe-perm
+
+# 如果在中国，使用镜像
+npm config set registry https://registry.npmmirror.com
+npm install -g openclaw@latest
+```
+
+**详细的故障排除指南**: 查看 [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+
 ## 💡 使用技巧
 
 ### 保持 24/7 运行
