@@ -167,6 +167,8 @@ npm install -g openclaw@latest
 
 **详细的故障排除指南**: 查看 [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 
+**npm 镜像源配置**: 查看 [NPM_MIRRORS.md](NPM_MIRRORS.md)
+
 ## 💡 使用技巧
 
 ### 保持 24/7 运行

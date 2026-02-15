@@ -150,6 +150,8 @@ npm install -g openclaw@latest
 
 **Detailed troubleshooting guide**: See [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 
+**npm Mirror Configuration**: See [NPM_MIRRORS.md](NPM_MIRRORS.md)
+
 ## 💡 Tips
 
 ### Keep Running 24/7

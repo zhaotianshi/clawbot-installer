@@ -154,15 +154,34 @@ if ! command -v openclaw &> /dev/null; then
             else
                 print_warning "方法 3 失败，尝试使用镜像..."
                 
-                # 方法 4: 使用国内镜像（适合中国用户）
-                print_info "尝试方法 4: 使用 npm 镜像..."
-                npm config set registry https://registry.npmmirror.com
-                if npm install -g openclaw@latest --unsafe-perm 2>/dev/null; then
-                    INSTALL_SUCCESS=true
-                    print_success "OpenClaw 安装完成"
+                # 方法 4: 尝试不同的镜像源
+                print_info "尝试方法 4: 使用镜像源..."
+                
+                # 镜像源列表
+                MIRRORS=(
+                    "https://registry.npmmirror.com|淘宝镜像"
+                    "https://mirrors.cloud.tencent.com/npm/|腾讯云镜像"
+                    "https://registry.npmjs.org|官方源"
+                )
+                
+                for mirror_info in "${MIRRORS[@]}"; do
+                    MIRROR_URL=$(echo $mirror_info | cut -d'|' -f1)
+                    MIRROR_NAME=$(echo $mirror_info | cut -d'|' -f2)
+                    
+                    print_info "尝试 $MIRROR_NAME..."
+                    npm config set registry "$MIRROR_URL"
+                    
+                    if npm install -g openclaw@latest --unsafe-perm 2>/dev/null; then
+                        INSTALL_SUCCESS=true
+                        print_success "OpenClaw 安装完成（使用 $MIRROR_NAME）"
+                        # 恢复官方源
+                        npm config set registry https://registry.npmjs.org
+                        break
+                    fi
+                done
+                
+                if [ "$INSTALL_SUCCESS" = false ]; then
                     # 恢复官方源
-                    npm config set registry https://registry.npmjs.org
-                else
                     npm config set registry https://registry.npmjs.org
                     print_error "所有安装方法都失败了"
                 fi

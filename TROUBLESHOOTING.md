@@ -35,13 +35,29 @@ npm config set fetch-timeout 60000
 npm config set fetch-retries 5
 npm install -g openclaw@latest
 
-# 方法 2: 使用国内镜像（中国用户）
+# 方法 2: 使用镜像源
+# 中国大陆用户推荐使用淘宝镜像
 npm config set registry https://registry.npmmirror.com
 npm install -g openclaw@latest
+
+# 其他可用镜像源：
+# 腾讯云镜像
+npm config set registry https://mirrors.cloud.tencent.com/npm/
+
+# 华为云镜像
+npm config set registry https://repo.huaweicloud.com/repository/npm/
 
 # 恢复官方源
 npm config set registry https://registry.npmjs.org
 ```
+
+**镜像源对比：**
+| 镜像源 | 地址 | 适用地区 | 速度 |
+|--------|------|----------|------|
+| npm 官方 | https://registry.npmjs.org | 全球 | 国外快 |
+| 淘宝镜像 | https://registry.npmmirror.com | 中国 | 国内最快 |
+| 腾讯云 | https://mirrors.cloud.tencent.com/npm/ | 中国 | 国内快 |
+| 华为云 | https://repo.huaweicloud.com/repository/npm/ | 中国 | 国内快 |
 
 #### 3. 磁盘空间不足
 ```
@@ -317,6 +333,38 @@ apt clean
    - OpenClaw Discord/Telegram
 
 ## 快速参考
+
+### npm 镜像源配置
+
+**查看当前源：**
+```bash
+npm config get registry
+```
+
+**切换到淘宝镜像（中国用户推荐）：**
+```bash
+npm config set registry https://registry.npmmirror.com
+```
+
+**切换到腾讯云镜像：**
+```bash
+npm config set registry https://mirrors.cloud.tencent.com/npm/
+```
+
+**切换到华为云镜像：**
+```bash
+npm config set registry https://repo.huaweicloud.com/repository/npm/
+```
+
+**恢复官方源：**
+```bash
+npm config set registry https://registry.npmjs.org
+```
+
+**临时使用镜像（不改变配置）：**
+```bash
+npm install -g openclaw@latest --registry=https://registry.npmmirror.com
+```
 
 ### 最常用的解决方案
 
